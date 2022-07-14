@@ -3,9 +3,21 @@
     <Toolbar />
     <main>
       <!-- 左侧组件列表 -->
-      <section class="left">left</section>
+      <section class="left">
+        <ComponentList />
+      </section>
       <!-- 中间画布 -->
-      <section class="center">center</section>
+      <section class="center">
+        <div
+          class="content"
+          @drop="handleDrop"
+          @dragover="handleDragOver"
+          @mousedown="handleMouseDown"
+          @mouseup="deselectCurComponent"
+        >
+          <Editor />
+        </div>
+      </section>
       <!-- 右侧属性列表 -->
       <section class="right">right</section>
     </main>
@@ -14,10 +26,21 @@
 
 <script>
 import Toolbar from "@/components/Toolbar.vue";
+import ComponentList from "@/components/ComponentList.vue"; // 左侧列表组件
+import Editor from '@/components/Editor/index.vue'; // 中间编辑区组件
+
 
 export default {
   components: {
     Toolbar,
+    ComponentList,
+    Editor
+  },
+  methods: {
+    handleDrop(e) {},
+    handleDragOver(e) {},
+    handleMouseDown(e) {},
+    deselectCurComponent(e) {},
   },
 };
 </script>
