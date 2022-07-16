@@ -4,4 +4,15 @@ export default {
     menuLeft: 0,
     menuShow: false,
   },
+  mutations: {
+    showContextMenu(state, { top, left }) {
+      state.menuShow = true;
+      state.menuTop = top;
+      state.menuLeft = left;
+    },
+
+    hideContextMenu(state) {
+      state.menuShow = false;
+    },
+  },
 };

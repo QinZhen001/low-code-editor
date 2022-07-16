@@ -1,14 +1,35 @@
 <template>
-  <div id="editor" class="editor" :class="{ edit: isEdit }"></div>
+  <div
+    id="editor"
+    class="editor"
+    :class="{ edit: isEdit }"
+    :style="{
+      width: changeStyleWithScale(canvasStyleData.width) + 'px',
+      height: changeStyleWithScale(canvasStyleData.height) + 'px',
+    }"
+    @contextmenu="handleContextMenu"
+    @mousedown="handleMouseDown"
+  >
+    <!-- 网格线 -->
+    <Grid />
+
+    <!-- 右击菜单 -->
+    <ContextMenu />
+  </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import { $ } from "@/utils/utils";
-import { changeStyleWithScale } from "@/utils/translate";
-import eventBus from "@/utils/eventBus";
+// import { $ } from "../utils/utils";
+import Grid from "./Grid.vue";
+import ContextMenu from "./ContextMenu.vue";
+import { changeStyleWithScale, eventBus } from "../../utils/index";
 
 export default {
+  components: {
+    Grid,
+    ContextMenu,
+  },
   props: {
     isEdit: {
       type: Boolean,
@@ -37,7 +58,37 @@ export default {
       this.hideArea();
     });
   },
+  methods: {
+    changeStyleWithScale,
+    handleContextMenu(e) {
+      e.stopPropagation();
+      e.preventDefault();
+    },
+    handleMouseDown() {},
+  },
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.editor {
+  position: relative;
+  background: #fff;
+  margin: auto;
+
+  .lock {
+    opacity: 0.5;
+
+    &:hover {
+      cursor: not-allowed;
+    }
+  }
+}
+
+.edit {
+  .component {
+    outline: none;
+    width: 100%;
+    height: 100%;
+  }
+}
+</style>

@@ -36,8 +36,7 @@
 </template>
 
 <script>
-import { generateID, toast } from "../utils/index.js";
-import eventBus from "../utils/eventBus";
+import { eventBus, generateID, toast } from "../utils/index.js";
 import { mapState } from "vuex";
 
 export default {
