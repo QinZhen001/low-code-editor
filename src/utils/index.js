@@ -42,5 +42,3 @@ export function swap(arr, i, j) {
 export function $(selector) {
   return document.querySelector(selector);
 }
-
-const aaa = 'aaa';
