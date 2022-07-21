@@ -1,23 +1,35 @@
 <template>
   <div>
     <div class="toolbar">
-      <el-button @click="undo">撤消</el-button>
-      <el-button @click="redo">重做</el-button>
+      <el-button @click="undo">撤消 undo</el-button>
+      <el-button @click="redo">重做 redo</el-button>
       <label for="input" class="insert">插入图片</label>
       <input id="input" type="file" hidden @change="handleFileChange" />
       <el-button style="margin-left: 10px" @click="preview">预览</el-button>
       <el-button @click="save">保存</el-button>
       <el-button @click="clearCanvas">清空画布</el-button>
-      <el-button :disabled="!areaData.components.length" @click="compose">组合</el-button>
+      <el-button :disabled="!areaData.components.length" @click="compose"
+        >组合</el-button
+      >
       <el-button
-        :disabled="!curComponent || curComponent.isLock || curComponent.component != 'Group'"
+        :disabled="
+          !curComponent ||
+          curComponent.isLock ||
+          curComponent.component != 'Group'
+        "
         @click="decompose"
       >
         拆分
       </el-button>
 
-      <el-button :disabled="!curComponent || curComponent.isLock" @click="lock">锁定</el-button>
-      <el-button :disabled="!curComponent || !curComponent.isLock" @click="unlock">解锁</el-button>
+      <el-button :disabled="!curComponent || curComponent.isLock" @click="lock"
+        >锁定</el-button
+      >
+      <el-button
+        :disabled="!curComponent || !curComponent.isLock"
+        @click="unlock"
+        >解锁</el-button
+      >
       <div class="canvas-config">
         <span>画布大小</span>
         <input v-model="canvasStyleData.width" />
@@ -36,8 +48,8 @@
 </template>
 
 <script>
-import { eventBus, generateID, toast } from "../utils/index.js";
-import { mapState } from "vuex";
+import { eventBus, generateID, toast } from '../utils/index.js';
+import { mapState } from 'vuex';
 
 export default {
   components: {
@@ -46,22 +58,22 @@ export default {
   data() {
     return {
       isShowPreview: false,
-      needToChange: ["top", "left", "width", "height", "fontSize"],
-      scale: "100%",
+      needToChange: ['top', 'left', 'width', 'height', 'fontSize'],
+      scale: '100%',
       timer: null,
     };
   },
   computed: mapState([
-    "componentData",
-    "canvasStyleData",
-    "areaData",
-    "curComponent",
-    "curComponentIndex",
+    'componentData',
+    'canvasStyleData',
+    'areaData',
+    'curComponent',
+    'curComponentIndex',
   ]),
   created() {
-    eventBus.$on("preview", this.preview);
-    eventBus.$on("save", this.save);
-    eventBus.$on("clearCanvas", this.clearCanvas);
+    eventBus.$on('preview', this.preview);
+    eventBus.$on('save', this.save);
+    eventBus.$on('clearCanvas', this.clearCanvas);
     this.scale = this.canvasStyleData.scale;
   },
   methods: {

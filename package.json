@@ -8,15 +8,34 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "element-ui": "^2.14.1",
+    "mathjs": "^10.5.3",
     "vue": "^2.7.0",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0",
-    "element-ui": "^2.14.1",
-    "mathjs": "^10.5.3"
+    "yorkie": "^2.0.0"
   },
   "devDependencies": {
+    "eslint": "^8.20.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.2.4",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-vue": "^9.2.0",
+    "lint-staged": "^13.0.3",
     "sass": "^1.53.0",
     "vite": "^2.9.9",
     "vite-plugin-vue2": "^2.0.1"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "src/**/*.{js,vue}": [
+      "eslint --fix",
+      "git add"
+    ]
   }
 }

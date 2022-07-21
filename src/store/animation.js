@@ -7,7 +7,7 @@ export default {
       curComponent.animations.splice(index, 1);
     },
     alterAnimation({ curComponent }, { index, data = {} }) {
-      if (typeof index === "number") {
+      if (typeof index === 'number') {
         const original = curComponent.animations[index];
         curComponent.animations[index] = { ...original, ...data };
       }

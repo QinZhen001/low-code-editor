@@ -12,18 +12,18 @@
   >
     <!-- 网格线 -->
     <Grid />
-
+    <!--页面组件列表展示-->
     <!-- 右击菜单 -->
     <ContextMenu />
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
 // import { $ } from "../utils/utils";
-import Grid from "./Grid.vue";
-import ContextMenu from "./ContextMenu.vue";
-import { changeStyleWithScale, eventBus } from "../../utils/index";
+import Grid from './Grid.vue';
+import ContextMenu from './ContextMenu.vue';
+import { changeStyleWithScale, eventBus } from '../../utils/index';
 
 export default {
   components: {
@@ -50,11 +50,16 @@ export default {
       isShowArea: false,
     };
   },
-  computed: mapState(["componentData", "curComponent", "canvasStyleData", "editor"]),
+  computed: mapState([
+    'componentData',
+    'curComponent',
+    'canvasStyleData',
+    'editor',
+  ]),
   mounted() {
     // 获取编辑器元素
-    this.$store.commit("getEditor");
-    eventBus.$on("hideArea", () => {
+    this.$store.commit('getEditor');
+    eventBus.$on('hideArea', () => {
       this.hideArea();
     });
   },
