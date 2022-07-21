@@ -1,13 +1,13 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import animation from "./animation";
-import compose from "./compose";
-import contextmenu from "./contextmenu";
-import copy from "./copy";
-import event from "./event";
-import layer from "./layer";
-import snapshot from "./snapshot";
-import lock from "./lock";
+import Vue from 'vue';
+import Vuex from 'vuex';
+import animation from './animation';
+import compose from './compose';
+import contextmenu from './contextmenu';
+import copy from './copy';
+import event from './event';
+import layer from './layer';
+import snapshot from './snapshot';
+import lock from './lock';
 
 Vue.use(Vuex);
 
@@ -22,7 +22,7 @@ const data = {
     ...snapshot.state,
     ...lock.state,
 
-    editMode: "edit", // 编辑器模式 edit preview
+    editMode: 'edit', // 编辑器模式 edit preview
     canvasStyleData: {
       // 页面全局数据
       width: 1200,
@@ -77,7 +77,7 @@ const data = {
       curComponent.style[key] = value;
     },
     setComponentData(state, componentData = []) {
-      Vue.set(state, "componentData", componentData);
+      Vue.set(state, 'componentData', componentData);
     },
     addComponent(state, { component, index }) {
       if (index !== undefined) {
@@ -103,5 +103,4 @@ const data = {
   },
 };
 
-
-export default new Vuex.Store(data)
+export default new Vuex.Store(data);

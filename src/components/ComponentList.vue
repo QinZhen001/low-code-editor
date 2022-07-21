@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import componentList from "@/custom-component/component-list";
+import componentList from '@/custom-component/component-list';
 
 export default {
   data() {
@@ -24,7 +24,7 @@ export default {
   },
   methods: {
     handleDragStart(e) {
-      e.dataTransfer.setData("index", e.target.dataset.index);
+      e.dataTransfer.setData('index', e.target.dataset.index);
     },
   },
 };

@@ -1,5 +1,5 @@
-import store from "./index";
-import { generateID, $ } from "../utils/index.js";
+import store from './index';
+import { generateID, $ } from '../utils/index.js';
 
 export default {
   state: {
@@ -17,7 +17,7 @@ export default {
   },
   mutations: {
     getEditor(state) {
-      state.editor = $("#editor");
+      state.editor = $('#editor');
     },
     setAreaData(state, data) {
       state.areaData = data;
@@ -25,7 +25,7 @@ export default {
     compose({ componentData, areaData, editor }) {
       const components = [];
       areaData.components.forEach((component) => {
-        if (component.component != "Group") {
+        if (component.component != 'Group') {
           components.push(component);
         } else {
           // 如果要组合的组件中，已经存在组合数据，则需要提前拆分

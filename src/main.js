@@ -1,20 +1,20 @@
-import Vue from "vue";
-import ElementUI from 'element-ui'
-import App from "./App.vue";
-import store from './store'
-import router from "./router/index.js";
+import Vue from 'vue';
+import ElementUI from 'element-ui';
+import App from './App.vue';
+import store from './store';
+import router from './router/index.js';
 
-import "@/assets/iconfont/iconfont.css";
-import "@/styles/animate.scss";
-import "element-ui/lib/theme-chalk/index.css";
-import "@/styles/reset.css";
+import '@/assets/iconfont/iconfont.css';
+import '@/styles/animate.scss';
+import 'element-ui/lib/theme-chalk/index.css';
+import '@/styles/reset.css';
 
-Vue.use(ElementUI, { size: 'small' })
-Vue.config.productionTip = false
+Vue.use(ElementUI, { size: 'small' });
+Vue.config.productionTip = false;
 
-
+// eslint-disable-next-line no-new
 new Vue({
-  el: "#app",
+  el: '#app',
   router,
   store,
   render: (h) => h(App),

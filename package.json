@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint --fix --ext .js,.vue src"
   },
   "dependencies": {
     "element-ui": "^2.14.1",
@@ -34,7 +35,7 @@
   },
   "lint-staged": {
     "src/**/*.{js,vue}": [
-      "eslint --fix",
+      "eslint --fix src",
       "git add"
     ]
   }

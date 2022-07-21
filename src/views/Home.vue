@@ -25,16 +25,15 @@
 </template>
 
 <script>
-import Toolbar from "@/components/Toolbar.vue";
-import ComponentList from "@/components/ComponentList.vue"; // 左侧列表组件
+import Toolbar from '@/components/Toolbar.vue';
+import ComponentList from '@/components/ComponentList.vue'; // 左侧列表组件
 import Editor from '@/components/Editor/index.vue'; // 中间编辑区组件
-
 
 export default {
   components: {
     Toolbar,
     ComponentList,
-    Editor
+    Editor,
   },
   methods: {
     handleDrop(e) {},
