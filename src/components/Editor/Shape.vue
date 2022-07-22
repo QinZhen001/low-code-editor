@@ -9,7 +9,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import { eventBus, mod360 } from '../../utils/index';
+import { eventBus, mod360, runAnimation } from '../../utils/index';
 
 export default {
   props: {
@@ -68,6 +68,15 @@ export default {
         // 根据旋转角度获取光标位置
         this.cursors = this.getCursor();
       }
+      eventBus.$on('runAnimation', () => {
+        if (this.element == this.curComponent) {
+          console.log('this.$el', this.$el);
+          runAnimation(this.$el, this.curComponent.animations);
+        }
+      });
+      eventBus.$on('stopAnimation', () => {
+        this.$el.classList.remove('animated', 'infinite');
+      });
     },
     methods: {
       isActive() {
@@ -82,4 +91,47 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.shape {
+  position: absolute;
+
+  &:hover {
+    cursor: move;
+  }
+}
+
+.active {
+  outline: 1px solid #70c0ff;
+  user-select: none;
+}
+
+.shape-point {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #59c7f9;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.icon-xiangyouxuanzhuan {
+  position: absolute;
+  top: -34px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: grab;
+  color: #59c7f9;
+  font-size: 20px;
+  font-weight: 600;
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.icon-suo {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+</style>

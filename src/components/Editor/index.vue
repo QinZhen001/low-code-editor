@@ -15,6 +15,8 @@
     <!--页面组件列表展示-->
     <!-- 右击菜单 -->
     <ContextMenu />
+    <!-- 标线 -->
+    <MarkLine />
   </div>
 </template>
 
@@ -23,6 +25,7 @@ import { mapState } from 'vuex';
 // import { $ } from "../utils/utils";
 import Grid from './Grid.vue';
 import ContextMenu from './ContextMenu.vue';
+import MarkLine from './MarkLine.vue';
 import { changeStyleWithScale, eventBus } from '../../utils/index';
 
 export default {
