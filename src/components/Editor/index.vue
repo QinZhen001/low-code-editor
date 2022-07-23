@@ -32,6 +32,7 @@ export default {
   components: {
     Grid,
     ContextMenu,
+    MarkLine,
   },
   props: {
     isEdit: {
