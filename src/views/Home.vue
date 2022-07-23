@@ -25,9 +25,12 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import Toolbar from '@/components/Toolbar.vue';
 import ComponentList from '@/components/ComponentList.vue'; // 左侧列表组件
 import Editor from '@/components/Editor/index.vue'; // 中间编辑区组件
+import { componentList } from '@/custom-component'; // 左侧列表数据
+import { deepCopy, generateID } from '../utils';
 
 export default {
   components: {
@@ -35,9 +38,32 @@ export default {
     ComponentList,
     Editor,
   },
+  computed: mapState([
+    'componentData',
+    'curComponent',
+    'isClickComponent',
+    'canvasStyleData',
+    'editor',
+  ]),
   methods: {
-    handleDrop(e) {},
-    handleDragOver(e) {},
+    handleDrop(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const index = e.dataTransfer.getData('index');
+      const rectInfo = this.editor.getBoundingClientRect();
+      if (index) {
+        const component = deepCopy(componentList[index]);
+        component.style.top = e.clientY - rectInfo.y;
+        component.style.left = e.clientX - rectInfo.x;
+        component.id = generateID();
+        this.$store.commit('addComponent', { component });
+        this.$store.commit('recordSnapshot');
+      }
+    },
+    handleDragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+    },
     handleMouseDown(e) {},
     deselectCurComponent(e) {},
   },

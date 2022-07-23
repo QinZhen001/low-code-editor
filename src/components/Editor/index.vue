@@ -13,6 +13,38 @@
     <!-- 网格线 -->
     <Grid />
     <!--页面组件列表展示-->
+    <Shape
+      v-for="(item, index) in componentData"
+      :key="item.id"
+      :default-style="item.style"
+      :style="getShapeStyle(item.style)"
+      :active="item.id === (curComponent || {}).id"
+      :element="item"
+      :index="index"
+      :class="{ lock: item.isLock }"
+    >
+      <!-- 非文字组件   -->
+      <component
+        :is="item.component"
+        v-if="item.component != 'v-text'"
+        :id="'component' + item.id"
+        class="component"
+        :style="getComponentStyle(item.style)"
+        :prop-value="item.propValue"
+        :element="item"
+      ></component>
+      <!-- 文字输入组件 -->
+      <component
+        :is="item.component"
+        v-else
+        :id="'component' + item.id"
+        class="component"
+        :style="getComponentStyle(item.style)"
+        :prop-value="item.propValue"
+        :element="item"
+        @input="handleInput"
+      ></component>
+    </Shape>
     <!-- 右击菜单 -->
     <ContextMenu />
     <!-- 标线 -->
@@ -22,17 +54,20 @@
 
 <script>
 import { mapState } from 'vuex';
-// import { $ } from "../utils/utils";
 import Grid from './Grid.vue';
 import ContextMenu from './ContextMenu.vue';
+import Shape from './Shape.vue';
 import MarkLine from './MarkLine.vue';
-import { changeStyleWithScale, eventBus } from '../../utils/index';
+import { changeStyleWithScale, eventBus, getStyle } from '../../utils/index';
+import ComponentList from '../ComponentList.vue';
 
 export default {
   components: {
     Grid,
     ContextMenu,
     MarkLine,
+    Shape,
+    ComponentList,
   },
   props: {
     isEdit: {
@@ -73,7 +108,21 @@ export default {
       e.stopPropagation();
       e.preventDefault();
     },
-    handleMouseDown() {},
+    handleMouseDown(e) {},
+    getShapeStyle(style) {
+      const result = {};
+      ['width', 'height', 'top', 'left', 'rotate'].forEach((attr) => {
+        if (attr != 'rotate') {
+          result[attr] = style[attr] + 'px';
+        } else {
+          result.transform = 'rotate(' + style[attr] + 'deg)';
+        }
+      });
+      return result;
+    },
+    getComponentStyle(style) {
+      return getStyle(style, ['top', 'left', 'width', 'height', 'rotate']);
+    },
   },
 };
 </script>
@@ -86,7 +135,6 @@ export default {
 
   .lock {
     opacity: 0.5;
-
     &:hover {
       cursor: not-allowed;
     }

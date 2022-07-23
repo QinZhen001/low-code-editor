@@ -12,7 +12,7 @@ export const commonAttr = {
 };
 
 // 编辑器左侧组件列表
-const list = [
+export const componentList = [
   {
     component: 'v-text',
     label: '文字',
@@ -90,10 +90,8 @@ const list = [
   },
 ];
 
-for (let i = 0, len = list.length; i < len; i++) {
-  const item = list[i];
+for (let i = 0, len = componentList.length; i < len; i++) {
+  const item = componentList[i];
   item.style = { ...commonStyle, ...item.style };
-  list[i] = { ...commonAttr, ...item };
+  componentList[i] = { ...commonAttr, ...item };
 }
-
-export default list;
