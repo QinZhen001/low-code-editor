@@ -54,8 +54,26 @@ export default {
     handleKeydown(e) {
       // 阻止冒泡，防止触发复制、粘贴组件操作
       this.canEdit && e.stopPropagation();
+      if (e.keyCode == this.ctrlKey) {
+        this.isCtrlDown = true;
+      } else if (
+        this.isCtrlDown &&
+        this.canEdit &&
+        keycodes.includes(e.keyCode)
+      ) {
+        e.stopPropagation();
+      } else if (e.keyCode == 46) {
+        // deleteKey
+        e.stopPropagation();
+      }
     },
-    handleKeyup() {},
+    handleKeyup(e) {
+      // 阻止冒泡，防止触发复制、粘贴组件操作
+      this.canEdit && e.stopPropagation();
+      if (e.keyCode == this.ctrlKey) {
+        this.isCtrlDown = false;
+      }
+    },
     setEdit() {
       if (this.element.isLock) {
         return;

@@ -30,7 +30,16 @@ import Toolbar from '@/components/Toolbar.vue';
 import ComponentList from '@/components/ComponentList.vue'; // 左侧列表组件
 import Editor from '@/components/Editor/index.vue'; // 中间编辑区组件
 import { componentList } from '@/custom-component'; // 左侧列表数据
-import { deepCopy, generateID } from '../utils';
+import { deepCopy, generateID, listenGlobalKeyDown } from '../utils';
+
+const resetID = (data) => {
+  data.forEach((item) => {
+    item.id = generateID();
+    if (item.component === 'Group') {
+      resetID(item.propValue);
+    }
+  });
+};
 
 export default {
   components: {
@@ -45,7 +54,23 @@ export default {
     'canvasStyleData',
     'editor',
   ]),
+  created() {
+    this.restore();
+    // 全局监听按键事件
+    listenGlobalKeyDown();
+  },
   methods: {
+    restore() {
+      // 用保存的数据恢复画布
+      const canvasData = localStorage.getItem('canvasData');
+      const canvasStyle = localStorage.getItem('canvasStyle');
+      if (canvasData) {
+        this.$store.commit('setComponentData', resetID(JSON.parse(canvasData)));
+      }
+      if (canvasStyle) {
+        this.$store.commit('setCanvasStyle', canvasStyle);
+      }
+    },
     handleDrop(e) {
       e.preventDefault();
       e.stopPropagation();
@@ -64,7 +89,11 @@ export default {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'copy';
     },
-    handleMouseDown(e) {},
+    handleMouseDown(e) {
+      e.stopPropagation();
+      this.$store.commit('setClickComponentStatus', false);
+      this.$store.commit('setInEditorStatus', true);
+    },
     deselectCurComponent(e) {},
   },
 };

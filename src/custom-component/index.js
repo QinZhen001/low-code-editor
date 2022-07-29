@@ -6,6 +6,8 @@ const globalComponents = ['Picture', 'VText', 'VButton', 'Group', 'RectShape'];
 
 export function regiesterComponents() {
   globalComponents.forEach((key) => {
-    Vue.component(key, () => import(`./${key}.vue`));
+    import(/* @vite-ignore */ `./${key}.vue`).then((module) => {
+      Vue.component(key, module.default);
+    });
   });
 }

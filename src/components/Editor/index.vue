@@ -18,7 +18,7 @@
       :key="item.id"
       :default-style="item.style"
       :style="getShapeStyle(item.style)"
-      :active="item.id === (curComponent || {}).id"
+      :active="item.id == (curComponent || {}).id"
       :element="item"
       :index="index"
       :class="{ lock: item.isLock }"
@@ -60,6 +60,16 @@ import Shape from './Shape.vue';
 import MarkLine from './MarkLine.vue';
 import { changeStyleWithScale, eventBus, getStyle } from '../../utils/index';
 import ComponentList from '../ComponentList.vue';
+
+const getTextareaHeight = (element, text) => {
+  console.log('element, text', element, text);
+  let { lineHeight, fontSize, height } = element.style;
+  if (lineHeight === '') {
+    lineHeight = 1.5;
+  }
+  const newHeight = (text.split('<br>').length - 1) * lineHeight * fontSize;
+  return height > newHeight ? height : newHeight;
+};
 
 export default {
   components: {
@@ -104,6 +114,12 @@ export default {
   },
   methods: {
     changeStyleWithScale,
+    handleInput(element, value) {
+      // 根据文本组件高度调整 shape 高度
+      this.$store.commit('setShapeStyle', {
+        height: getTextareaHeight(element, value),
+      });
+    },
     handleContextMenu(e) {
       e.stopPropagation();
       e.preventDefault();
