@@ -49,6 +49,8 @@
     <ContextMenu />
     <!-- 标线 -->
     <MarkLine />
+    <!-- 选中区域 -->
+    <Area v-show="isShowArea" :start="start" :width="width" :height="height" />
   </div>
 </template>
 
@@ -60,6 +62,7 @@ import Shape from './Shape.vue';
 import MarkLine from './MarkLine.vue';
 import { changeStyleWithScale, eventBus, getStyle } from '../../utils/index';
 import ComponentList from '../ComponentList.vue';
+import Area from './Area.vue';
 
 const getTextareaHeight = (element, text) => {
   console.log('element, text', element, text);
@@ -78,6 +81,7 @@ export default {
     MarkLine,
     Shape,
     ComponentList,
+    Area,
   },
   props: {
     isEdit: {
@@ -123,8 +127,84 @@ export default {
     handleContextMenu(e) {
       e.stopPropagation();
       e.preventDefault();
+      // 计算菜单相对于编辑器的位移
+      let target = e.target;
+      let top = e.offsetY;
+      let left = e.offsetX;
+      while (target instanceof SVGElement) {
+        target = target.parentNode;
+      }
+      while (!target.className.includes('editor')) {
+        left += target.offsetLeft;
+        top += target.offsetTop;
+        target = target.parentNode;
+      }
+      this.$store.commit('showContextMenu', { top, left });
     },
-    handleMouseDown(e) {},
+    handleMouseDown(e) {
+      // 如果没有选中组件 在画布上点击时需要调用 e.preventDefault() 防止触发 drop 事件
+      if (
+        !this.curComponent ||
+        (this.curComponent.component != 'v-text' &&
+          this.curComponent.component != 'rect-shape')
+      ) {
+        e.preventDefault();
+      }
+      this.hideArea();
+
+      // 获取编辑器的位移信息，每次点击时都需要获取一次。主要是为了方便开发时调试用。
+      const rectInfo = this.editor.getBoundingClientRect();
+      this.editorX = rectInfo.x;
+      this.editorY = rectInfo.y;
+      const startX = e.clientX;
+      const startY = e.clientY;
+      this.start.x = startX - this.editorX;
+      this.start.y = startY - this.editorY;
+      // 展示选中区域
+      this.isShowArea = true;
+
+      const move = (moveEvent) => {
+        this.width = Math.abs(moveEvent.clientX - startX);
+        this.height = Math.abs(moveEvent.clientY - startY);
+        if (moveEvent.clientX < startX) {
+          this.start.x = moveEvent.clientX - this.editorX;
+        }
+        if (moveEvent.clientY < startY) {
+          this.start.y = moveEvent.clientY - this.editorY;
+        }
+        console.log('move', this.start, this.width, this.height);
+      };
+
+      const up = (e) => {
+        document.removeEventListener('mousemove', move);
+        document.removeEventListener('mouseup', up);
+
+        if (e.clientX == startX && e.clientY == startY) {
+          this.hideArea();
+          return;
+        }
+
+        this.createGroup();
+      };
+
+      document.addEventListener('mousemove', move);
+      document.addEventListener('mouseup', up);
+    },
+    createGroup() {},
+    hideArea() {
+      this.isShowArea = false;
+      this.width = 0;
+      this.height = 0;
+      this.$store.commit('setAreaData', {
+        style: {
+          left: 0,
+          top: 0,
+          width: 0,
+          height: 0,
+        },
+        components: [],
+      });
+    },
     getShapeStyle(style) {
       const result = {};
       ['width', 'height', 'top', 'left', 'rotate'].forEach((attr) => {

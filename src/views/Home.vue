@@ -72,6 +72,7 @@ export default {
       }
     },
     handleDrop(e) {
+      console.log('handleDrop', e);
       e.preventDefault();
       e.stopPropagation();
       const index = e.dataTransfer.getData('index');
@@ -86,6 +87,7 @@ export default {
       }
     },
     handleDragOver(e) {
+      console.log('handleDragOver', e);
       e.preventDefault();
       e.dataTransfer.dropEffect = 'copy';
     },
