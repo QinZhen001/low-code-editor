@@ -60,7 +60,13 @@ import Grid from './Grid.vue';
 import ContextMenu from './ContextMenu.vue';
 import Shape from './Shape.vue';
 import MarkLine from './MarkLine.vue';
-import { changeStyleWithScale, eventBus, getStyle } from '../../utils/index';
+import {
+  changeStyleWithScale,
+  eventBus,
+  getStyle,
+  getComponentRotatedStyle,
+  $,
+} from '../../utils/index';
 import ComponentList from '../ComponentList.vue';
 import Area from './Area.vue';
 
@@ -190,7 +196,82 @@ export default {
       document.addEventListener('mousemove', move);
       document.addEventListener('mouseup', up);
     },
-    createGroup() {},
+    createGroup() {
+      // 获取选中区域的组件数据
+      const areaData = this.getSelectArea();
+      if (areaData.length <= 1) {
+        this.hideArea();
+        return;
+      }
+      // 根据选中区域和区域中每个组件的位移信息来创建 Group 组件
+      // 要遍历选择区域的每个组件，获取它们的 left top right bottom 信息来进行比较
+      let top = Infinity;
+      let left = Infinity;
+      let right = -Infinity;
+      let bottom = -Infinity;
+      areaData.forEach((component) => {
+        let style = {};
+        if (component.component === 'Group') {
+          component.propValue.forEach((item) => {
+            const rectInfo = $(`#component${item.id}`).getBoundingClientRect();
+            style.left = rectInfo.left - this.editorX;
+            style.top = rectInfo.top - this.editorY;
+            style.right = rectInfo.right - this.editorX;
+            style.bottom = rectInfo.bottom - this.editorY;
+
+            if (style.left < left) left = style.left;
+            if (style.top < top) top = style.top;
+            if (style.right > right) right = style.right;
+            if (style.bottom > bottom) bottom = style.bottom;
+          });
+        } else {
+          style = getComponentRotatedStyle(component.style);
+        }
+        if (style.left < left) left = style.left;
+        if (style.top < top) top = style.top;
+        if (style.right > right) right = style.right;
+        if (style.bottom > bottom) bottom = style.bottom;
+      });
+
+      this.start.x = left;
+      this.start.y = top;
+      this.width = right - left;
+      this.height = bottom - top;
+
+      // 设置选中区域位移大小信息和区域内的组件数据
+      this.$store.commit('setAreaData', {
+        style: {
+          left,
+          top,
+          width: this.width,
+          height: this.height,
+        },
+        components: areaData,
+      });
+    },
+    getSelectArea() {
+      const result = [];
+      // 区域起点坐标
+      const { x, y } = this.start;
+      // 计算所有的组件数据，判断是否在选中区域内
+      this.componentData.forEach((component) => {
+        if (component.isLock) {
+          return;
+        }
+        const { left, top, width, height } = getComponentRotatedStyle(
+          component.style
+        );
+        if (
+          x <= left &&
+          y <= top &&
+          left + width <= x + this.width &&
+          top + height <= y + this.height
+        ) {
+          result.push(component);
+        }
+      });
+      return result;
+    },
     hideArea() {
       this.isShowArea = false;
       this.width = 0;
@@ -217,7 +298,8 @@ export default {
       return result;
     },
     getComponentStyle(style) {
-      return getStyle(style, ['top', 'left', 'width', 'height', 'rotate']);
+      const res = getStyle(style, ['top', 'left', 'width', 'height', 'rotate']);
+      return res;
     },
   },
 };

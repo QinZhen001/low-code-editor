@@ -1,3 +1,5 @@
+import imgUrl from '@/assets/title.jpg';
+
 // 公共样式
 export const commonStyle = {
   rotate: 0,
@@ -54,7 +56,7 @@ export const componentList = [
     label: '图片',
     icon: 'tupian',
     propValue: {
-      url: import('@/assets/title.jpg'),
+      url: imgUrl,
       flip: {
         horizontal: false,
         vertical: false,

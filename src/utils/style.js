@@ -45,6 +45,8 @@ export function getStyle(style, filter = []) {
       }
     }
   });
+
+  return result;
 }
 
 // 获取一个组件旋转 rotate 后的样式

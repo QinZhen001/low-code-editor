@@ -50,7 +50,6 @@ export default {
     },
     showLine(isDownward, isRightward) {
       const line = this.$refs;
-      console.log('line', line);
       const components = this.componentData;
       const curComponentStyle = getComponentRotatedStyle(
         this.curComponent.style
