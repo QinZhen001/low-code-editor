@@ -21,7 +21,37 @@ export function changeStyleWithScale(value) {
  * @param   {Number}  rotate 旋转的角度
  * @return  {Object}         旋转后的坐标
  * https://www.zhihu.com/question/67425734/answer/252724399 旋转矩阵公式
- */ export function getRotatedPointCoordinate(style, center, name) {
+ */
+export function calculateRotatedPointCoordinate(point, center, rotate) {
+  /**
+   * 旋转公式：
+   *  点a(x, y)
+   *  旋转中心c(x, y)
+   *  旋转后点n(x, y)
+   *  旋转角度θ                tan ??
+   * nx = cosθ * (ax - cx) - sinθ * (ay - cy) + cx
+   * ny = sinθ * (ax - cx) + cosθ * (ay - cy) + cy
+   */
+  return {
+    x:
+      (point.x - center.x) * Math.cos(angleToRadian(rotate)) -
+      (point.y - center.y) * Math.sin(angleToRadian(rotate)) +
+      center.x,
+    y:
+      (point.x - center.x) * Math.sin(angleToRadian(rotate)) +
+      (point.y - center.y) * Math.cos(angleToRadian(rotate)) +
+      center.y,
+  };
+}
+
+/**
+ * 获取旋转后的点坐标（八个点之一）
+ * @param  {Object} style  样式
+ * @param  {Object} center 组件中心点
+ * @param  {String} name   点名称
+ * @return {Object}        旋转后的点坐标
+ */
+export function getRotatedPointCoordinate(style, center, name) {
   // point 是未旋转前的坐标
   let point;
   switch (name) {

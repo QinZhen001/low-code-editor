@@ -24,7 +24,12 @@
 
 <script>
 import { mapState } from 'vuex';
-import { eventBus, mod360, runAnimation } from '../../utils/index';
+import {
+  eventBus,
+  mod360,
+  runAnimation,
+  calculateComponentPositonAndSize,
+} from '../../utils/index';
 
 export default {
   props: {
@@ -217,12 +222,102 @@ export default {
     handleMouseDownOnPoint(point, e) {
       e.stopPropagation();
       e.preventDefault();
+      this.$store.commit('setInEditorStatus', true);
+      this.$store.commit('setClickComponentStatus', true);
+
+      const style = { ...this.defaultStyle };
+
+      // 组件宽高比
+      const proportion = style.width / style.height;
+
+      // 组件中心点
+      const center = {
+        x: style.left + style.width / 2,
+        y: style.top + style.height / 2,
+      };
+
+      // 获取画布位移信息
+      const editorRectInfo = this.editor.getBoundingClientRect();
+
+      const pointRect = e.target.getBoundingClientRect();
+      // 当前点击圆点相对于画布的中心坐标
+      const curPoint = {
+        x: Math.round(
+          pointRect.left - editorRectInfo.left + e.target.offsetWidth / 2
+        ),
+        y: Math.round(
+          pointRect.top - editorRectInfo.top + e.target.offsetHeight / 2
+        ),
+      };
+
+      // 获取对称点的坐标
+      const symmetricPoint = {
+        x: center.x - (curPoint.x - center.x),
+        y: center.y - (curPoint.y - center.y),
+      };
+
+      // 是否需要保存快照
+      let needSave = false;
+      const isFirst = true;
+
+      const needLockProportion = this.isNeedLockProportion();
+
+      const move = (moveEvent) => {
+        // 第一次点击时也会触发 move，所以会有“刚点击组件但未移动，组件的大小却改变了”的情况发生
+        // 因此第一次点击时不触发 move 事件
+        // if (isFirst) {
+        //   isFirst = false;
+        //   return;
+        // }
+
+        needSave = true;
+        const curPositon = {
+          x: moveEvent.clientX - editorRectInfo.left,
+          y: moveEvent.clientY - editorRectInfo.top,
+        };
+        calculateComponentPositonAndSize(
+          point,
+          style,
+          curPositon,
+          proportion,
+          needLockProportion,
+          {
+            center,
+            curPoint,
+            symmetricPoint,
+          }
+        );
+
+        this.$store.commit('setShapeStyle', style);
+      };
+
+      const up = () => {
+        document.removeEventListener('mousemove', move);
+        document.removeEventListener('mouseup', up);
+        needSave && this.$store.commit('recordSnapshot');
+      };
+
+      document.addEventListener('mousemove', move);
+      document.addEventListener('mouseup', up);
     },
     selectCurComponent(e) {
       // 阻止向父组件冒泡
       e.stopPropagation();
       e.preventDefault();
       this.$store.commit('hideContextMenu');
+    },
+
+    isNeedLockProportion() {
+      if (this.element.componnet != 'Group') {
+        return false;
+      }
+      const ratates = [0, 90, 180, 360];
+      for (const component of this.element.propValue) {
+        if (!ratates.includes(mod360(parseInt(component.style.rotate)))) {
+          return true;
+        }
+      }
+      return false;
     },
   },
 };
