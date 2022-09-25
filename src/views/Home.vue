@@ -96,7 +96,15 @@ export default {
       this.$store.commit('setClickComponentStatus', false);
       this.$store.commit('setInEditorStatus', true);
     },
-    deselectCurComponent(e) {},
+    deselectCurComponent(e) {
+      if (!this.isClickComponent) {
+        this.$store.commit('setCurComponent', { component: null, index: null });
+      }
+      // 0 左击 1 滚轮 2 右击
+      if (e.button != 2) {
+        this.$store.commit('hideContextMenu');
+      }
+    },
   },
 };
 </script>
