@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { Message } from 'element-ui';
 
 export * from './eventBus';
@@ -41,6 +42,8 @@ export function deepCopy(target) {
 
 export function swap(arr, i, j) {
   const temp = arr[i];
+  Vue.set(arr, i, arr[j]);
+  Vue.set(arr, j, temp);
 }
 
 export function $(selector) {

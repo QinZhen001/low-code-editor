@@ -163,7 +163,54 @@ export default {
       return result;
     },
     // 处理旋转
-    handleRotate(e) {},
+    handleRotate(e) {
+      this.$store.commit('setClickComponentStatus', true);
+      e.preventDefault();
+      e.stopPropagation();
+      // 初始坐标和初始角度
+      const pos = { ...this.defaultStyle };
+      const startY = e.clientY;
+      const startX = e.clientX;
+      const startRotate = pos.rotate;
+
+      // 获取元素中心点位置
+      const rect = this.$el.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      // 旋转前的角度
+      const rotateDegreeBefore =
+        Math.atan2(startY - centerY, startX - centerX) / (Math.PI / 180);
+
+      // 如果元素没有移动，则不保存快照
+      let hasMove = false;
+      const move = (moveEvent) => {
+        hasMove = true;
+        const curX = moveEvent.clientX;
+        const curY = moveEvent.clientY;
+
+        // atan2 方法返回一个 -pi 到 pi 之间的数值，表示点 (x, y) 对应的偏移角度。
+        // 这是一个逆时针角度，以弧度为单位，正X轴和点 (x, y) 与原点连线 之间
+
+        // 旋转后的角度
+        const rotateDegreeAfter =
+          Math.atan2(curY - centerY, curX - centerX) / (Math.PI / 180);
+        // 获取旋转的角度值
+        pos.rotate = startRotate + rotateDegreeAfter - rotateDegreeBefore;
+        // 修改当前组件样式
+        this.$store.commit('setShapeStyle', pos);
+      };
+
+      const up = () => {
+        hasMove && this.$store.commit('recordSnapshot');
+        document.removeEventListener('mousemove', move);
+        document.removeEventListener('mouseup', up);
+        this.cursors = this.getCursor(); // 根据旋转角度获取光标位置
+      };
+
+      document.addEventListener('mousemove', move);
+      document.addEventListener('mouseup', up);
+    },
     handleMouseDownOnShape(e) {
       this.$store.commit('setInEditorStatus', true);
       this.$store.commit('setClickComponentStatus', true);
@@ -258,17 +305,17 @@ export default {
 
       // 是否需要保存快照
       let needSave = false;
-      const isFirst = true;
+      let isFirst = true;
 
       const needLockProportion = this.isNeedLockProportion();
 
       const move = (moveEvent) => {
         // 第一次点击时也会触发 move，所以会有“刚点击组件但未移动，组件的大小却改变了”的情况发生
         // 因此第一次点击时不触发 move 事件
-        // if (isFirst) {
-        //   isFirst = false;
-        //   return;
-        // }
+        if (isFirst) {
+          isFirst = false;
+          return;
+        }
 
         needSave = true;
         const curPositon = {
