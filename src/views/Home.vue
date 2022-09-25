@@ -19,7 +19,22 @@
         </div>
       </section>
       <!-- 右侧属性列表 -->
-      <section class="right">right</section>
+      <section class="right">
+        <el-tabs v-model="activeName">
+          <el-tab-pane label="属性" name="attr">
+            <AttrList v-if="curComponent" />
+            <p v-else class="placeholder">请选择组件</p>
+          </el-tab-pane>
+          <el-tab-pane label="动画" name="animation">
+            <AnimationList v-if="curComponent" />
+            <p v-else class="placeholder">请选择组件</p>
+          </el-tab-pane>
+          <el-tab-pane label="事件" name="events">
+            <EventList v-if="curComponent" />
+            <p v-else class="placeholder">请选择组件</p>
+          </el-tab-pane>
+        </el-tabs>
+      </section>
     </main>
   </div>
 </template>
@@ -30,6 +45,9 @@ import Toolbar from '@/components/Toolbar.vue';
 import ComponentList from '@/components/ComponentList.vue'; // 左侧列表组件
 import Editor from '@/components/Editor/index.vue'; // 中间编辑区组件
 import { componentList } from '@/custom-component'; // 左侧列表数据
+import AttrList from '@/components/AttrList.vue'; // 右侧属性列表
+import AnimationList from '@/components/AnimationList.vue'; // 右侧动画列表
+import EventList from '@/components/EventList.vue'; // 右侧事件列表
 import { deepCopy, generateID, listenGlobalKeyDown } from '../utils';
 
 const resetID = (data) => {
@@ -46,6 +64,15 @@ export default {
     Toolbar,
     ComponentList,
     Editor,
+    AttrList,
+    AnimationList,
+    EventList,
+  },
+  data() {
+    return {
+      activeName: 'attr',
+      reSelectAnimateIndex: undefined,
+    };
   },
   computed: mapState([
     'componentData',
