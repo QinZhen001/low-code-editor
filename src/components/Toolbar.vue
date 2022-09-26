@@ -50,7 +50,7 @@
 <script>
 import { eventBus, generateID, toast } from '../utils/index.js';
 import { mapState } from 'vuex';
-import Preview from './Editor/Preview';
+import Preview from './Editor/Preview.vue';
 import { divide, multiply } from 'mathjs';
 
 export default {

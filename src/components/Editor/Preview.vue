@@ -23,7 +23,7 @@
 <script>
 import { changeStyleWithScale, getStyle } from '../../utils';
 import ComponentWrapper from './ComponentWrapper.vue';
-import { mapState } from 'vue';
+import { mapState } from 'vuex';
 
 export default {
   components: {
