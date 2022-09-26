@@ -7,6 +7,7 @@ export * from './runAnimation';
 export * from './style';
 export * from './shortcutKey';
 export * from './calc';
+export * from './events';
 
 export let _id = 0;
 

@@ -43,17 +43,19 @@
     </div>
 
     <!-- 预览 -->
-    <!-- <Preview v-model="isShowPreview" @change="handlePreviewChange" /> -->
+    <Preview v-model="isShowPreview" @change="handlePreviewChange" />
   </div>
 </template>
 
 <script>
 import { eventBus, generateID, toast } from '../utils/index.js';
 import { mapState } from 'vuex';
+import Preview from './Editor/Preview';
+import { divide, multiply } from 'mathjs';
 
 export default {
   components: {
-    // Preview
+    Preview,
   },
   data() {
     return {
@@ -77,9 +79,16 @@ export default {
     this.scale = this.canvasStyleData.scale;
   },
   methods: {
-    format(value) {},
-    getOriginStyle(value) {},
-    handleScaleChange() {},
+    format(value) {
+      return multiply(value, divide(parseFloat(this.scale), 100));
+    },
+    getOriginStyle(value) {
+      return divide(value, divide(parseFloat(this.canvasStyleData.scale), 100));
+    },
+    handleScaleChange() {
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => {});
+    },
     lock() {},
     unlock() {},
     compose() {},
