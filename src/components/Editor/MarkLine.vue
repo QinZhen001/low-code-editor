@@ -54,6 +54,27 @@ export default {
       const curComponentStyle = getComponentRotatedStyle(
         this.curComponent.style
       );
+      const curComponentHalfwidth = curComponentStyle.width / 2;
+      const curComponentHalfHeight = curComponentStyle.height / 2;
+      this.hideLine();
+
+      components.forEach((component) => {
+        if (component == this.curComponent) {
+          return;
+        }
+        const componentStyle = getComponentRotatedStyle(component.style);
+        const { top, left, bottom, right } = componentStyle;
+        const componentHalfwidth = componentStyle.width / 2;
+        const componentHalfHeight = componentStyle.height / 2;
+
+        const conditions = {
+          top: [],
+          left: [],
+        };
+      });
+    },
+    isNearly(dragValue, targetValue) {
+      return Math.abs(dragValue - targetValue) <= this.diff;
     },
   },
 };

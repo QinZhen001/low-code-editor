@@ -1,4 +1,3 @@
-import { e } from 'mathjs';
 import { sin, cos, toPercent, mod360 } from './translate';
 
 export function $(selector) {

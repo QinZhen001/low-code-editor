@@ -64,6 +64,15 @@ export default {
       });
 
       eventBus.$emit('hideArea');
+
+      store.commit('batchDeleteComponent', areaData.components);
+
+      store.commit('setCurComponent', {
+        component: componentData[componentData.length - 1],
+        index: componentData.length - 1,
+      });
+
+      areaData.components = [];
     },
     decompose({ curComponent, editor }) {
       const parentStyle = { ...curComponent.style };

@@ -57,6 +57,7 @@ const resetID = (data) => {
       resetID(item.propValue);
     }
   });
+  return data;
 };
 
 export default {
@@ -95,11 +96,10 @@ export default {
         this.$store.commit('setComponentData', resetID(JSON.parse(canvasData)));
       }
       if (canvasStyle) {
-        this.$store.commit('setCanvasStyle', canvasStyle);
+        this.$store.commit('setCanvasStyle', JSON.parse(canvasStyle));
       }
     },
     handleDrop(e) {
-      console.log('handleDrop', e);
       e.preventDefault();
       e.stopPropagation();
       const index = e.dataTransfer.getData('index');

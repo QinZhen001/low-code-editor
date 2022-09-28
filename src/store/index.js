@@ -77,7 +77,7 @@ const data = {
       curComponent.style[key] = value;
     },
     setComponentData(state, componentData = []) {
-      Vue.set(state, 'componentData', componentData);
+      state.componentData = componentData;
     },
     addComponent(state, { component, index }) {
       if (index !== undefined) {

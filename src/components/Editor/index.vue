@@ -178,7 +178,6 @@ export default {
         if (moveEvent.clientY < startY) {
           this.start.y = moveEvent.clientY - this.editorY;
         }
-        console.log('move', this.start, this.width, this.height);
       };
 
       const up = (e) => {

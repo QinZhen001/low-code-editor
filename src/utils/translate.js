@@ -1,4 +1,4 @@
-import store from '@/store';
+import store from '../store/index';
 import { divide, multiply } from 'mathjs';
 
 // 角度转弧度
