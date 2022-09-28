@@ -48,10 +48,11 @@
 </template>
 
 <script>
-import { eventBus, generateID, toast } from '../utils/index.js';
+import { eventBus, generateID, toast, deepCopy, $ } from '../utils/index.js';
 import { mapState } from 'vuex';
 import Preview from './Editor/Preview.vue';
 import { divide, multiply } from 'mathjs';
+import { commonAttr, commonStyle } from '../custom-component/component-list';
 
 export default {
   components: {
@@ -87,15 +88,99 @@ export default {
     },
     handleScaleChange() {
       clearTimeout(this.timer);
-      this.timer = setTimeout(() => {});
+      this.timer = setTimeout(() => {
+        // 画布比例设一个最小值，不能为 0
+        this.scale = ~~this.scale || 1; // 转化成相应的数值型变量
+        const componentData = deepCopy(this.componentData);
+        componentData.forEach((component) => {
+          Object.keys(component.style).forEach((key) => {
+            if (this.needToChange.includes(key)) {
+              // 根据原来的比例获取样式原来的尺寸
+              // 再用原来的尺寸 * 现在的比例得出新的尺寸
+              component.style[key] = this.format(
+                this.getOriginStyle(component.style[key])
+              );
+            }
+          });
+        });
+
+        this.$store.commit('setComponentData', componentData);
+        // 更新画布数组后，需要重新设置当前组件，否则在改变比例后，直接拖动圆点改变组件大小不会生效 https://github.com/woai3c/visual-drag-demo/issues/74
+        this.$store.commit('setCurComponent', {
+          component: componentData[this.curComponentIndex],
+          index: this.curComponentIndex,
+        });
+        this.$store.commit('setCanvasStyle', {
+          ...this.canvasStyleData,
+          scale: this.scale,
+        });
+      }, 1000);
     },
-    lock() {},
-    unlock() {},
-    compose() {},
-    decompose() {},
-    undo() {},
-    redo() {},
-    handleFileChange() {},
+    lock() {
+      this.$store.commit('lock');
+    },
+    unlock() {
+      this.$store.commit('unlock');
+    },
+    compose() {
+      this.$store.commit('compose');
+      this.$store.commit('recordSnapshot');
+    },
+    decompose() {
+      this.$store.commit('decompose');
+      this.$store.commit('recordSnapshot');
+    },
+    undo() {
+      this.$store.commit('undo');
+    },
+    redo() {
+      this.$store.commit('redo');
+    },
+    handleFileChange(e) {
+      const file = e.target.files[0];
+      if (!file.type.includes('image')) {
+        toast('只能插入图片');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (res) => {
+        const fileResult = res.target.result;
+        const img = new Image();
+        img.onload = () => {
+          this.$store.commit('addComponent', {
+            component: {
+              ...commonAttr,
+              id: generateID(),
+              component: 'Picture',
+              label: '图片',
+              icon: '',
+              propValue: {
+                url: fileResult,
+                flip: {
+                  horizontal: false,
+                  vertical: false,
+                },
+              },
+              style: {
+                ...commonStyle,
+                top: 0,
+                left: 0,
+                width: img.width,
+                height: img.height,
+              },
+            },
+          });
+          this.$store.commit('recordSnapshot');
+
+          // 修复重复上传同一文件，@change 不触发的问题
+          $('#input').setAttribute('type', 'text');
+          $('#input').setAttribute('type', 'file');
+        };
+
+        img.src = fileResult;
+      };
+      reader.readAsDataURL(file);
+    },
     preview() {},
     save() {},
     clearCanvas() {},
