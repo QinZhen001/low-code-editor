@@ -1,5 +1,12 @@
 import store from './index';
-import { generateID, $ } from '../utils/index.js';
+import {
+  generateID,
+  $,
+  decomposeComponent,
+  eventBus,
+  createGroupStyle,
+} from '../utils/index.js';
+import { commonStyle, commonAttr } from '../custom-component/component-list';
 
 export default {
   state: {
@@ -29,6 +36,54 @@ export default {
           components.push(component);
         } else {
           // 如果要组合的组件中，已经存在组合数据，则需要提前拆分
+          const parentStyle = { ...component.style };
+          const subComponents = component.propValue;
+          const editorRect = editor.getBoundingClientRect();
+          subComponents.forEach((c) => {
+            decomposeComponent(c, editorRect, parentStyle);
+          });
+          components.push(...component.propValue);
+        }
+      });
+
+      const groupComponent = {
+        id: generateID(),
+        component: 'Group',
+        ...commonAttr,
+        style: {
+          ...commonStyle,
+          ...areaData.style,
+        },
+        propValue: components,
+      };
+
+      createGroupStyle(groupComponent);
+
+      store.commit('addComponent', {
+        component: groupComponent,
+      });
+
+      eventBus.$emit('hideArea');
+    },
+    decompose({ curComponent, editor }) {
+      const parentStyle = { ...curComponent.style };
+      const components = curComponent.propValue;
+      const editorRect = editor.getBoundingClientRect();
+
+      store.commit('deleteComponent');
+      components.forEach((c) => {
+        decomposeComponent(c, editorRect, parentStyle);
+        store.commit('addComponent', { component: c });
+      });
+    },
+    // 将已经放到 Group 组件数据删除，也就是在 componentData 中删除，因为它们已经从 componentData 挪到 Group 组件中了
+    batchDeleteComponent({ componentData }, deleteData) {
+      deleteData.forEach((component) => {
+        for (let i = 0, len = componentData.length; i < len; i++) {
+          if (component.id == componentData[i].id) {
+            componentData.splice(i, 1);
+            break;
+          }
         }
       });
     },

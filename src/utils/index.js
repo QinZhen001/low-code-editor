@@ -46,7 +46,3 @@ export function swap(arr, i, j) {
   Vue.set(arr, i, arr[j]);
   Vue.set(arr, j, temp);
 }
-
-export function $(selector) {
-  return document.querySelector(selector);
-}

@@ -1,5 +1,9 @@
 import { e } from 'mathjs';
-import { sin, cos } from './translate';
+import { sin, cos, toPercent, mod360 } from './translate';
+
+export function $(selector) {
+  return document.querySelector(selector);
+}
 
 export const styleData = [
   { key: 'left', label: 'x 坐标' },
@@ -170,3 +174,45 @@ animationClassData.forEach((item) => {
     e.animationTime = 1;
   });
 });
+
+// 将组合中的各个子组件拆分出来，并计算它们新的 style
+export function decomposeComponent(component, editorRect, parentStyle) {
+  const componentRect = $(`#component${component.id}`).getBoundingClientRect();
+  // 获取元素的中心点坐标
+  const center = {
+    x: componentRect.left - editorRect.left + componentRect.width / 2,
+    y: componentRect.top - editorRect.top + componentRect.height / 2,
+  };
+  component.style.rotate = mod360(component.style.rotate + parentStyle.rotate);
+  component.style.width =
+    (parseFloat(component.groupStyle.width) / 100) * parentStyle.width;
+  component.style.height =
+    (parseFloat(component.groupStyle.height) / 100) * parentStyle.height;
+
+  // 计算组件的新坐标
+  component.style.left = center.x - component.style.width / 2;
+  component.style.top = center.y - component.style.height / 2;
+  component.groupStyle = {};
+}
+
+export function createGroupStyle(groupComponent) {
+  const parentStyle = groupComponent.style;
+  // component.groupStyle 的 top left 是相对于 group 组件的位置
+  // 如果已存在 component.groupStyle，说明已经计算过一次了。不需要再次计算
+  groupComponent.propValue.forEach((component) => {
+    if (!Object.keys(component.groupStyle).length) {
+      const style = { ...component.style };
+      component.groupStyle = getStyle(style);
+      component.groupStyle.left = toPercent(
+        (style.left - parentStyle.left) / parentStyle.width
+      );
+      component.groupStyle.top = toPercent(
+        (style.top - parentStyle.top) / parentStyle.height
+      );
+      component.groupStyle.width = toPercent(style.width / parentStyle.width);
+      component.groupStyle.height = toPercent(
+        style.height / parentStyle.height
+      );
+    }
+  });
+}

@@ -181,10 +181,23 @@ export default {
       };
       reader.readAsDataURL(file);
     },
-    preview() {},
-    save() {},
-    clearCanvas() {},
-    handlePreviewChange() {},
+    preview() {
+      this.isShowPreview = true;
+      this.$store.commit('setEditMode', 'preview');
+    },
+    save() {
+      localStorage.setItem('canvasData', JSON.stringify(this.componentData));
+      localStorage.setItem('canvasStyle', JSON.stringify(this.canvasStyleData));
+      this.$message.success('保存成功');
+    },
+    clearCanvas() {
+      this.$store.commit('setCurComponent', { component: null, index: null });
+      this.$store.commit('setComponentData', []);
+      this.$store.commit('recordSnapshot');
+    },
+    handlePreviewChange() {
+      this.$store.commit('setEditMode', 'edit');
+    },
   },
 };
 </script>

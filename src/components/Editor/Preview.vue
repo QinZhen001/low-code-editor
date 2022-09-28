@@ -29,6 +29,10 @@ export default {
   components: {
     ComponentWrapper,
   },
+  model: {
+    prop: 'show',
+    event: 'change',
+  },
   props: {
     show: {
       type: Boolean,
