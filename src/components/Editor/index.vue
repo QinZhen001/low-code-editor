@@ -155,6 +155,8 @@ export default {
           this.curComponent.component != 'rect-shape')
       ) {
         e.preventDefault();
+        // 取消文字选中效果
+        window.getSelection().empty();
       }
       this.hideArea();
 
@@ -198,7 +200,6 @@ export default {
     createGroup() {
       // 获取选中区域的组件数据
       const areaData = this.getSelectArea();
-      console.log('createGroup', areaData);
       if (areaData.length <= 1) {
         this.hideArea();
         return;
@@ -261,10 +262,6 @@ export default {
         const { left, top, width, height } = getComponentRotatedStyle(
           component.style
         );
-        console.log('left', left);
-        console.log('top', top);
-        console.log('width', width);
-        console.log('height', height);
         if (
           x <= left &&
           y <= top &&

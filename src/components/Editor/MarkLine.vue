@@ -190,11 +190,6 @@ export default {
     },
     translatecurComponentShift(key, condition, curComponentStyle) {
       const { width, height } = this.curComponent.style;
-      console.log(
-        'translatecurComponentShift',
-        height,
-        curComponentStyle.height
-      );
       if (key == 'top') {
         return Math.round(
           condition.dragShift - (height - curComponentStyle.height) / 2
