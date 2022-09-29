@@ -131,7 +131,6 @@ export const listenGlobalKeyDown = () => {
     }
   };
   window.onmousedown = () => {
-    console.log('onmousedown');
     store.commit('setInEditorStatus', false);
   };
 };

@@ -114,7 +114,6 @@ export default {
       }
     },
     handleDragOver(e) {
-      console.log('handleDragOver', e);
       e.preventDefault();
       e.dataTransfer.dropEffect = 'copy';
     },

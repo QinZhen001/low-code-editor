@@ -115,7 +115,7 @@ export function getCenterPoint(p1, p2) {
 }
 
 export function sin(rotate) {
-  Math.abs(Math.sin(angleToRadian(rotate)));
+  return Math.abs(Math.sin(angleToRadian(rotate)));
 }
 
 export function cos(rotate) {
